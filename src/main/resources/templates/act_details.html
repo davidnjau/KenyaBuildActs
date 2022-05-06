@@ -1,0 +1,199 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html class="no-js h-100" lang="en">
+  <head>
+    <meta charset="utf-8">
+
+  </head>
+  <body class="h-100">
+
+  <div data-th-include="sidebar.html"></div>
+
+
+  <div class="container-fluid">
+      <div class="row">
+
+        <main class="main-content p-0 offset-lg-2" style="width: 100%; height: 100%">
+
+
+          <div class="main-content-container container-fluid px-4">
+            <!-- Page Header -->
+            <div class="page-header row no-gutters py-4">
+              <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">Act Details</h3>
+              </div>
+            </div>
+            <!-- End Page Header -->
+
+            <!-- Default Light Table -->
+            <div class="row">
+              <div class="col">
+                <div class="card card-small mb-4">
+
+                  <div class="card-header border-bottom">
+
+                    <button type="button" class="btn btn-white ml-3 collapsible">
+                        <span class="text-success">
+                          <i class="material-icons">add</i>
+                        </span> Add Acts
+                    </button>
+
+                    <div class="content1" >
+
+                      <div style="display: flex;" id="summernote1">Provide Title</div>
+                      <div style="display: flex;" id="summernote">Provide Description</div>
+                      <button type="button" class="btn btn-white ml-3 collapsible" onclick="saveActData()">
+                        <span class="text-success">
+                          <i class="material-icons">save</i>
+                        </span> Save
+                      </button>
+
+                    </div>
+
+
+
+                   
+                  </div>
+                 
+                  <div class="card-body p-0 pb-3 text-center">
+                    <table class="table mb-0">
+                      <thead class="bg-light">
+                        <tr>
+                          <th scope="col" class="border-0">#</th>
+                          <th scope="col" class="border-0">Title</th>
+                          <th scope="col" class="border-0">Description</th>
+
+                          <th scope="col" class="border-0">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody th:each="actsEntity : ${actDetailsEntityList}">
+
+                        <tr>
+                          <td th:text="${actsEntityStat.index + 1}">1</td>
+                          <td th:text="${actsEntity.getName()}">Maina Njau</td>
+                          <td th:text="${actsEntity.getDescription()}">KMCM 123</td>
+
+
+                          <td>
+                            <div class="btn-group btn-group-sm">
+                              <button type="button" class="btn btn-white">
+                                <span class="text-success">
+                                  <i class="material-icons">edit</i>
+                                </span> Edit
+                              </button>
+                              <a href="/" type="button" class="btn btn-white">
+                                <span class="text-success">
+                                  <i class="material-icons">remove_red_eye</i>
+                                </span> View 
+                              </a>
+                              <button type="button" class="btn btn-white">
+                                <span class="text-danger">
+                                <i class="material-icons">clear</i>
+                                </span> Delete
+                              </button>
+                              
+                              
+                            </div>
+                          </td>
+                        </tr>
+                        
+                        
+                        
+                      </tbody>
+                    </table>
+                    <div class="card-footer border-top">
+                      <div class="row">
+                        <div class="col text-center view-report">
+                          <button type="submit" class="btn btn-white">Prev</button>
+                          <button type="submit" class="btn btn-white">1</button>
+                          <button type="submit" class="btn btn-white">2</button>
+                          <button type="submit" class="btn btn-white">...</button>
+                          <button type="submit" class="btn btn-white">10</button>
+                          <button type="submit" class="btn btn-white">Next</button>
+  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- End Default Light Table -->
+          
+          </div>
+        </main>
+      </div>
+    </div>
+
+  <script>
+
+    const coll = document.getElementsByClassName("collapsible");
+    let i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        const content1 = this.nextElementSibling;
+        if (content1.style.display === "block") {
+          content1.style.display = "none";
+        } else {
+          content1.style.display = "block";
+        }
+      });
+    }
+
+    $(document).ready(function() {
+
+      $('#summernote1').summernote();
+      $('#summernote').summernote();
+    });
+
+    function saveActData() {
+
+      // let summernote1 = document.getElementById("summernote1").value;
+
+      const desc = $('#summernote').summernote('code');
+      const name = $('#summernote1').summernote('code');
+      let actId = window.localStorage.getItem('actId');
+
+      if (name && actId){
+
+        let description = ""
+        if (desc){
+          description = desc
+        }
+
+        let dataJson = {
+          "name":name,
+          "actId":actId,
+          "desc":description
+        };
+        let postData = JSON.stringify(dataJson);
+        $.ajax({
+          type: 'POST',
+          url: "/api/v1/kenya-acts/add",
+          data: postData,
+          success: function(response) {
+            showSuccess("The act data was saved successfully.")
+          }, error: function (error) {
+            showError("There was an issue saving the act.")
+          },
+          contentType: "application/json",
+          dataType: 'json'
+
+        })
+
+
+      }else {
+        showError("Please provide an act detail.")
+      }
+
+
+    }
+
+  </script>
+
+  </body>
+</html>
