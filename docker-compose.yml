@@ -6,7 +6,7 @@ services:
     container_name: SMSManager
     command: bash -c "java -jar ./kenya_build_acts_javabackend/KenyaActs.jar"
     ports:
-      - "8086:8086"
+      - "8089:8089"
     volumes:
       - .:/kenya_build_acts_javabackend
 
