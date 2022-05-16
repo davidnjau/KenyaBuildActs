@@ -29,5 +29,5 @@ jobs:
       with:
        username: ${{ secrets.DOCKER_HUB_USERNAME }}
        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-       repository: dnjau/kenya_build_acts_image
+       repository: davidnjau21/kenya_build_acts_image
        tags: latest
